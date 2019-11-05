@@ -17,4 +17,13 @@ def earliest_ancestor(ancestors, starting_node):
         graph.add_vertex(child)
         graph.add_edge(child, parent)
 
-    print(graph.vertices)
+    # print(graph.vertices)
+
+    result = []
+    result.append(graph.earliest(starting_node))
+    # print(result)
+
+    if result[0] == starting_node:
+        return -1
+    else:
+        return min(result)
