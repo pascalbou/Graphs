@@ -90,7 +90,36 @@ class Graph:
         starting_vertex to destination_vertex in
         breath-first order.
         """
-        pass  # TODO
+        # create a queue
+        q = Queue()
+        # enqueue a list holding the starting vertex id
+        q.enqueue([starting_vertex])
+        # created an empty visited set
+        visited = set()
+        # while the queue is not empty
+        while q.size() > 0:
+            # dequeue to the path
+            path = q.dequeue()
+            # set a vert to the last item in the path
+            vert = path[-1]
+            # if vert is not in visited
+            if vert not in visited:
+                # if vert is equal to target value
+                if vert == destination_vertex:
+                    # return path
+                    return path
+                # add vert to visited set
+                visited.add(vert)
+                # loop over next vert in vertices at the index of vert
+                for next_vert in self.vertices[vert]:
+                    # set a new path equal to a new list of the path (copy)
+                    new_path = list(path)
+                    # append next vert to new path
+                    new_path.append(next_vert)
+                    # enqueue the new path
+                    q.enqueue(new_path)
+        # return None
+        return None
         
     def dfs(self, starting_vertex, destination_vertex):
         """
@@ -99,7 +128,36 @@ class Graph:
         depth-first order.
         """
         
-        pass  # TODO
+        # create a stack
+        s = Stack()
+        # push a list holding the starting vertex id
+        s.push([starting_vertex])
+        # created an empty visited set
+        visited = set()
+        # while the queue is not empty
+        while s.size() > 0:
+            # pop to the path
+            path = s.pop()
+            # set a vert to the last item in the path
+            vert = path[-1]
+            # if vert is not in visited
+            if vert not in visited:
+                # if vert is equal to target value
+                if vert == destination_vertex:
+                    # return path
+                    return path
+                # add vert to visited set
+                visited.add(vert)
+                # loop over next vert in vertices at the index of vert
+                for next_vert in self.vertices[vert]:
+                    # set a new path equal to a new list of the path (copy)
+                    new_path = list(path)
+                    # append next vert to new path
+                    new_path.append(next_vert)
+                    # push the new path
+                    s.push(new_path)
+        # return None
+        return None
 
 
 
