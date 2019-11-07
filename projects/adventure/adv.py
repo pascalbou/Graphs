@@ -55,8 +55,8 @@ def game(player):
 
     # print(stack.size())
     while stack.size() and len(graph.vertices) != len(roomGraph):
-        print(current.id)
-        time.sleep(.100)
+        # print(current.id)
+        # time.sleep(.100)
         # graph.add_vertex(current.id)
         exits = current.getExits()
         # print(current.getExits())
@@ -102,10 +102,10 @@ def game(player):
                 stack.push(current.id)
                 unknown_exits = []
                 result.append(direction)
-                print(result)
+                # print(result)
 
     # print(graph.vertices)
-    print(result)
+    # print(result)
 
     return result
 
