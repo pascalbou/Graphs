@@ -29,10 +29,21 @@ traversalPath = []
 # MASTER PLAN
 # I will use dft with a stack to lower the movements of coming back to my steps
 
+def get_opposite(direction):
+    if direction == 'n':
+        return 's'
+    if direction == 'e':
+        return 'w'
+    if direction == 's':
+        return 'n'
+    if direction == 'w':
+        return 'e'                        
+
 def game(player):
     result = []
     graph = Graph()
     stack = Stack()
+    # directions = ['n', 'e', 's', 'w']
 
     stack.push(player.currentRoom.id)
 
@@ -57,17 +68,18 @@ def game(player):
         # print(current_vertex)
 
         # print(graph.vertices[current_vertex]['n'])
-        if graph.vertices[current_vertex]['n'] == '?':
-            print('works')
-            previous = current
-            player.travel('n')
-            current = player.currentRoom
-            graph.add_edge(previous.id, 'n', current.id)
-            graph.add_vertex(current.id)
-            graph.add_edge(current.id, 's', previous.id)
-            print(graph.vertices) 
-            stack.push(current.id)
-            result.append('n')
+        for direction in exits:
+            if graph.vertices[current_vertex][direction] == '?':
+                print('works')
+                previous = current
+                player.travel(direction)
+                current = player.currentRoom
+                graph.add_edge(previous.id, direction, current.id)
+                graph.add_vertex(current.id)
+                graph.add_edge(current.id, get_opposite(direction), previous.id)
+                print(graph.vertices) 
+                stack.push(current.id)
+                result.append(direction)
 
     # print(graph.vertices)
     print(result)
