@@ -14,7 +14,7 @@ class Graph:
         if vertex not in self.vertices:
             self.vertices[vertex] = {}
 
-    def add_edge(self, v, dict):
+    def add_edge(self, v1, key, value):
         """
         Add a directed edge to the graph.
         """
@@ -23,9 +23,9 @@ class Graph:
         #     print(f'vertice {v1} does not exist')
         #     # raise KeyError("That vertex does not exist")
         # else:
-            # self.vertices[v1].append(v2)   
+        #     self.vertices[v1].append(v2)   
         
-        self.vertices[v] = dict          
+        self.vertices[v1][key] = value         
                
 
     def bft(self, starting_vertex):

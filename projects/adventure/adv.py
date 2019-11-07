@@ -32,39 +32,41 @@ traversalPath = []
 def game(player):
     result = []
     graph = Graph()
-    graph.add_vertex(player.currentRoom.id)
-    # print(player.name)
-    # print(player.currentRoom.id)
-    # print(player.currentRoom.getExits())
-
-    exits = player.currentRoom.getExits()
-    for ex in exits:
-        edges_to_add = {}
-        edges_to_add[str(ex)] = '?'
-    graph.add_edge(player.currentRoom.id, edges_to_add)
-
-    # print(graph.vertices)
-
     stack = Stack()
+
     stack.push(player.currentRoom.id)
 
-    # previousID = None
-    # currentID = player.currentRoom.id
+    previous = None
+    current = player.currentRoom
+    graph.add_vertex(current.id)
 
     # print(stack.size())
     while stack.size():
+        print(current.id)
+        # graph.add_vertex(current.id)
+        exits = current.getExits()
+        print(current.getExits())
+        for ex in exits:
+            print(graph.vertices[current.id])
+            if ex not in graph.vertices[current.id]:
+                # graph.add_edge(current.id, {str(ex): '?'})
+                graph.add_edge(current.id, str(ex), '?')
+        print(graph.vertices)        
+
         current_vertex = stack.pop()
         # print(current_vertex)
 
         # print(graph.vertices[current_vertex]['n'])
         if graph.vertices[current_vertex]['n'] == '?':
             print('works')
-            previousID = player.currentRoom.id
+            previous = current
             player.travel('n')
-            currentID = player.currentRoom.id
-            graph.add_edge(previousID, {'n': currentID})
-            graph.add_edge(currentID, {'s': previousID})
-            stack.push(currentID)
+            current = player.currentRoom
+            graph.add_edge(previous.id, 'n', current.id)
+            graph.add_vertex(current.id)
+            graph.add_edge(current.id, 's', previous.id)
+            print(graph.vertices) 
+            stack.push(current.id)
             result.append('n')
 
     # print(graph.vertices)
