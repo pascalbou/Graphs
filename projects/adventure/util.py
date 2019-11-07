@@ -23,4 +23,6 @@ class Stack():
             return None
     def size(self):
         return len(self.stack)
+    def reset(self):
+        self.stack = []
 
