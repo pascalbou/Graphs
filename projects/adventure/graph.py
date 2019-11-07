@@ -70,7 +70,30 @@ class Graph:
                     stack.push(edge)
                     already_explored[edge] = True
 
-        print()                       
+        print()           
+
+    def dft_maze(self, starting_vertex):
+        """
+        Print each vertex in depth-first order
+        beginning from starting_vertex.
+        """
+        stack = Stack()
+        already_explored = {}
+        stack.push(starting_vertex)
+        already_explored[starting_vertex] = True
+
+        while stack.size():
+            current_vertex = stack.pop()
+            # print(f'{current_vertex} ', end='') 
+
+            # for edge in self.vertices[current_vertex]:
+                # if edge not in already_explored:
+                #     stack.push(edge)
+                #     already_explored[edge] = True
+            # if current_vertex['n'] != '?':
+
+
+        # print()                           
 
     def earliest(self, starting_vertex_id):
         # create an empty stack and push the starting vertex ID

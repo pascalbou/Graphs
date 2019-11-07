@@ -30,6 +30,7 @@ traversalPath = []
 # I will use dft with a stack to lower the movements of coming back to my steps
 
 def game(player):
+    result = []
     graph = Graph()
     graph.add_vertex(player.currentRoom.id)
     # print(player.name)
@@ -42,9 +43,34 @@ def game(player):
         edges_to_add[str(ex)] = '?'
     graph.add_edge(player.currentRoom.id, edges_to_add)
 
-    print(graph.vertices)
+    # print(graph.vertices)
 
-    return []
+    stack = Stack()
+    stack.push(player.currentRoom.id)
+
+    # previousID = None
+    # currentID = player.currentRoom.id
+
+    # print(stack.size())
+    while stack.size():
+        current_vertex = stack.pop()
+        # print(current_vertex)
+
+        # print(graph.vertices[current_vertex]['n'])
+        if graph.vertices[current_vertex]['n'] == '?':
+            print('works')
+            previousID = player.currentRoom.id
+            player.travel('n')
+            currentID = player.currentRoom.id
+            graph.add_edge(previousID, {'n': currentID})
+            graph.add_edge(currentID, {'s': previousID})
+            stack.push(currentID)
+            result.append('n')
+
+    # print(graph.vertices)
+    print(result)
+
+    return result
 
 traversalPath = game(player)
 
