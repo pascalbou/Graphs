@@ -19,7 +19,7 @@ roomGraph={494: [(1, 8), {'e': 457}], 492: [(1, 20), {'e': 400}], 493: [(2, 5), 
 world.loadGraph(roomGraph)
 
 # UNCOMMENT TO VIEW MAP
-world.printRooms()
+# world.printRooms()
 
 player = Player("Pascal", world.startingRoom)
 
@@ -37,25 +37,29 @@ def get_opposite(direction):
     if direction == 's':
         return 'n'
     if direction == 'w':
-        return 'e'                        
+        return 'e'   
+
+def get_random_exit(exits):
+    return random.choice(exits)                     
 
 def game(player):
     result = []
     graph = Graph()
     stack = Stack()
 
-    stack.push(player.currentRoom.id)
-
     previous = None
     current = player.currentRoom
-    graph.add_vertex(current.id)
     unknown_exits = []
     way_back = Stack()
+
+    stack.push(player.currentRoom.id)
+    graph.add_vertex(current.id)
 
     # print(stack.size())
     while stack.size() and len(graph.vertices) != len(roomGraph):
         # print(current.id)
         # time.sleep(.100)
+
         exits = current.getExits()
         # print(current.getExits())
         for ex in exits:
@@ -80,7 +84,7 @@ def game(player):
             stack.push(current.id)
             unknown_exits = []
         else:
-            direction = random.choice(unknown_exits)
+            direction = get_random_exit(unknown_exits)
             way_back.push(get_opposite(direction))   
 
             if graph.vertices[current_vertex][direction] == '?':
