@@ -48,10 +48,8 @@ def get_shortest_exit(exits, room):
 
     for ex in exits:
         room_in_direction = room.getRoomInDirection(ex)
-        # print(room_in_direction)
         exits_from_room_in_direction = room_in_direction.getExits()
         len_exits = len(exits_from_room_in_direction)
-        # print(len_exits)
         if len_exits == 1:
             shortest.append(ex)
         elif len_exits == 2:
@@ -63,9 +61,6 @@ def get_shortest_exit(exits, room):
                 len_exits2 = len(exits_from_room_in_direction2)
                 if len_exits2 == 1:
                     second_shortest.append(ex)
-
-    # print(f'shortest: {shortest}')
-    # print(f'second_shortest: {second_shortest}')
 
     if len(shortest) != 0:
         return random.choice(shortest)
@@ -88,21 +83,13 @@ def game(player):
     stack.push(player.currentRoom.id)
     graph.add_vertex(current.id)
 
-    # print(stack.size())
     while stack.size() and len(graph.vertices) != len(roomGraph):
-        # print(current.id)
-        # time.sleep(1)
-
         exits = current.getExits()
-        # print(current.getExits())
         for ex in exits:
-            # print(graph.vertices[current.id])
             if ex not in graph.vertices[current.id]:
                 graph.add_edge(current.id, str(ex), '?')
-        # print(graph.vertices)        
 
         current_vertex = stack.pop()
-        # print(current_vertex)
 
         for direction in exits:
             if graph.vertices[current_vertex][direction] == '?':
@@ -112,12 +99,10 @@ def game(player):
             direction = way_back.pop()
             result.append(direction)
             player.travel(direction)
-            # print(current.id)
             current = player.currentRoom
             stack.push(current.id)
             unknown_exits = []
         else:
-            # direction = get_random_exit(unknown_exits)
             direction = get_shortest_exit(unknown_exits, current) or get_random_exit(unknown_exits)
             way_back.push(get_opposite(direction))   
 
@@ -128,14 +113,9 @@ def game(player):
                 graph.add_edge(previous.id, direction, current.id)
                 graph.add_vertex(current.id)
                 graph.add_edge(current.id, get_opposite(direction), previous.id)
-                # print(graph.vertices) 
                 stack.push(current.id)
                 unknown_exits = []
                 result.append(direction)
-                # print(result)
-
-    # print(graph.vertices)
-    # print(result)
 
     return result
 
