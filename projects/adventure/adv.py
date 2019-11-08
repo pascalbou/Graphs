@@ -44,35 +44,33 @@ def get_random_exit(exits):
 
 def get_shortest_exit(exits, room):
     shortest = []
-    second_shortest = []
 
-    for ex in exits:
-        room_in_direction = room.getRoomInDirection(ex)
-        # print(room_in_direction)
-        exits_from_room_in_direction = room_in_direction.getExits()
-        len_exits = len(exits_from_room_in_direction)
-        # print(len_exits)
-        if len_exits == 1:
-            shortest.append(ex)
-        elif len_exits == 2:
-            opp = get_opposite(ex)
-            exits_from_room_in_direction.remove(opp)
-            for ex2 in exits_from_room_in_direction:
-                room_in_direction2 = room_in_direction.getRoomInDirection(ex2)
-                exits_from_room_in_direction2 = room_in_direction2.getExits()
-                len_exits2 = len(exits_from_room_in_direction2)
-                if len_exits2 == 1:
-                    second_shortest.append(ex)
+    def helper(shortest, exits, room):
+        for ex in exits:
+            room_in_direction = room.getRoomInDirection(ex)
+            # print(room_in_direction)
+            exits_from_room_in_direction = room_in_direction.getExits()
+            len_exits = len(exits_from_room_in_direction)
+            # print(len_exits)
+            if len_exits == 1:
+                shortest.append(ex)
+                return shortest
+            elif len_exits == 2:
+                opp = get_opposite(ex)
+                exits_from_room_in_direction.remove(opp)
+                shortest = helper(shortest, exits_from_room_in_direction, room_in_direction)
+
+    shortest = helper(shortest, exits, room)
 
     # print(f'shortest: {shortest}')
     # print(f'second_shortest: {second_shortest}')
 
-    if len(shortest) != 0:
-        return random.choice(shortest)
-    elif len(second_shortest) != 0:
-        return random.choice(second_shortest)
-    else:
-        return None                              
+    # if len(shortest) != 0:
+    #     return random.choice(shortest)
+    # elif len(second_shortest) != 0:
+    #     return random.choice(second_shortest)
+    # else:
+    #     return None                              
 
 
 def game(player):
@@ -90,8 +88,8 @@ def game(player):
 
     # print(stack.size())
     while stack.size() and len(graph.vertices) != len(roomGraph):
-        # print(current.id)
-        # time.sleep(1)
+        print(current.id)
+        time.sleep(.1)
 
         exits = current.getExits()
         # print(current.getExits())
