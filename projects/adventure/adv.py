@@ -43,6 +43,8 @@ def get_random_exit(exits):
     return random.choice(exits)
 
 def get_shortest_exit(exits, room):
+    # first pick the deadend exit
+    # else pick the second shortest deadend exit
     shortest = []
     second_shortest = []
 
@@ -51,8 +53,10 @@ def get_shortest_exit(exits, room):
         exits_from_room_in_direction = room_in_direction.getExits()
         len_exits = len(exits_from_room_in_direction)
         if len_exits == 1:
+            # room in this direction is a deadend
             shortest.append(ex)
         elif len_exits == 2:
+            # else search or an exit with two rooms then deadend
             opp = get_opposite(ex)
             exits_from_room_in_direction.remove(opp)
             for ex2 in exits_from_room_in_direction:
@@ -71,19 +75,23 @@ def get_shortest_exit(exits, room):
 
 
 def game(player):
+    # using a depth first traversal with a stack
     result = []
     graph = Graph()
     stack = Stack()
 
     previous = None
     current = player.currentRoom
+    # list of exits with '?'
     unknown_exits = []
+    # if going through a room with only two exits, start to save path to come back on our steps
     way_back = Stack()
 
     stack.push(player.currentRoom.id)
     graph.add_vertex(current.id)
 
     while stack.size() and len(graph.vertices) != len(roomGraph):
+        # save in graph all exits and initialize with '?'
         exits = current.getExits()
         for ex in exits:
             if ex not in graph.vertices[current.id]:
@@ -95,6 +103,7 @@ def game(player):
             if graph.vertices[current_vertex][direction] == '?':
                 unknown_exits.append(direction)
 
+        # reached deadend and moves back on our steps or all rooms have been explored from this room
         if len(unknown_exits) == 0:
             direction = way_back.pop()
             result.append(direction)
@@ -103,9 +112,12 @@ def game(player):
             stack.push(current.id)
             unknown_exits = []
         else:
+            # pick an exit with only one or two rooms, else pick a random room and pray
             direction = get_shortest_exit(unknown_exits, current) or get_random_exit(unknown_exits)
+            # saves return path in case we reach deadend
             way_back.push(get_opposite(direction))   
 
+            # moves and updates the graph, replacing the '?'
             if graph.vertices[current_vertex][direction] == '?':
                 previous = current
                 player.travel(direction)
