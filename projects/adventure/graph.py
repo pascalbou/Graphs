@@ -11,18 +11,22 @@ class Graph:
         """
         Add a vertex to the graph.
         """
-        self.vertices[vertex] = set()
+        if vertex not in self.vertices:
+            self.vertices[vertex] = {}
 
-    def add_edge(self, v1, v2):
+    def add_edge(self, v1, key, value):
         """
         Add a directed edge to the graph.
         """
         # rejects if vertice does not exist
-        if v1 not in self.vertices or v2 not in self.vertices:
-            print(f'vertice {v1} does not exist')
-            # raise KeyError("That vertex does not exist")
-        else:
-            self.vertices[v1].add(v2)          
+        # if v1 not in self.vertices or v2 not in self.vertices:
+        #     print(f'vertice {v1} does not exist')
+        #     # raise KeyError("That vertex does not exist")
+        # else:
+        #     self.vertices[v1].append(v2)   
+        
+        self.vertices[v1][key] = value         
+               
 
     def bft(self, starting_vertex):
         """
@@ -66,22 +70,53 @@ class Graph:
                     stack.push(edge)
                     already_explored[edge] = True
 
-        print()                       
+        print()           
 
-    def dft_recursive(self, starting_vertex, already_explored = {}):
+    def dft_maze(self, starting_vertex):
         """
         Print each vertex in depth-first order
         beginning from starting_vertex.
-        This should be done using recursion.
         """
-
+        stack = Stack()
+        already_explored = {}
+        stack.push(starting_vertex)
         already_explored[starting_vertex] = True
-        print(starting_vertex)
 
-        for edge in self.vertices[starting_vertex]:
-            if edge not in already_explored:
-                self.dft_recursive(edge, already_explored)
+        while stack.size():
+            current_vertex = stack.pop()
+            # print(f'{current_vertex} ', end='') 
 
+            # for edge in self.vertices[current_vertex]:
+                # if edge not in already_explored:
+                #     stack.push(edge)
+                #     already_explored[edge] = True
+            # if current_vertex['n'] != '?':
+
+
+        # print()                           
+
+    def earliest(self, starting_vertex_id):
+        # create an empty stack and push the starting vertex ID
+        s = Stack()
+        s.push(starting_vertex_id)
+        # create a set to store the visited vertices
+        visited = set()
+        
+        v = 0
+        # while the stack is not empty
+        while s.size() > 0:
+            # pop the first vertex
+            v = s.pop()
+            # if that vertex has not been visited
+            if v not in visited:
+                # mark it as visited (printing for a representation)
+                # print(v)
+                visited.add(v)
+                # then add all of it's neighbors to the top of the stack
+                for next_vertex in self.vertices[v]:
+                    s.push(next_vertex)  
+
+        return v  
              
 
     def bfs(self, starting_vertex, destination_vertex):
@@ -158,7 +193,6 @@ class Graph:
                     s.push(new_path)
         # return None
         return None
-
 
 
 

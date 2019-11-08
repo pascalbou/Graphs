@@ -1,8 +1,10 @@
 from room import Room
 from player import Player
 from world import World
+from util import Queue, Stack
+from graph import Graph
 
-import random
+import random, time
 
 # Load world
 world = World()
@@ -17,14 +19,119 @@ roomGraph={494: [(1, 8), {'e': 457}], 492: [(1, 20), {'e': 400}], 493: [(2, 5), 
 world.loadGraph(roomGraph)
 
 # UNCOMMENT TO VIEW MAP
-world.printRooms()
+# world.printRooms()
 
-player = Player("Name", world.startingRoom)
+player = Player("Pascal", world.startingRoom)
 
 # Fill this out
 traversalPath = []
 
+# MASTER PLAN
+# I will use dft with a stack to lower the movements of coming back to my steps
 
+def get_opposite(direction):
+    if direction == 'n':
+        return 's'
+    if direction == 'e':
+        return 'w'
+    if direction == 's':
+        return 'n'
+    if direction == 'w':
+        return 'e'   
+
+def get_random_exit(exits):
+    return random.choice(exits)
+
+def get_shortest_exit(exits, room):
+    # first pick the deadend exit
+    # else pick the second shortest deadend exit
+    shortest = []
+    second_shortest = []
+
+    for ex in exits:
+        room_in_direction = room.getRoomInDirection(ex)
+        exits_from_room_in_direction = room_in_direction.getExits()
+        len_exits = len(exits_from_room_in_direction)
+        if len_exits == 1:
+            # room in this direction is a deadend
+            shortest.append(ex)
+        elif len_exits == 2:
+            # else search or an exit with two rooms then deadend
+            opp = get_opposite(ex)
+            exits_from_room_in_direction.remove(opp)
+            for ex2 in exits_from_room_in_direction:
+                room_in_direction2 = room_in_direction.getRoomInDirection(ex2)
+                exits_from_room_in_direction2 = room_in_direction2.getExits()
+                len_exits2 = len(exits_from_room_in_direction2)
+                if len_exits2 == 1:
+                    second_shortest.append(ex)
+
+    if len(shortest) != 0:
+        return random.choice(shortest)
+    elif len(second_shortest) != 0:
+        return random.choice(second_shortest)
+    else:
+        return None                              
+
+
+def game(player):
+    # using a depth first traversal with a stack
+    result = []
+    graph = Graph()
+    stack = Stack()
+
+    previous = None
+    current = player.currentRoom
+    # list of exits with '?'
+    unknown_exits = []
+    # if going through a room with only two exits, start to save path to come back on our steps
+    way_back = Stack()
+
+    stack.push(player.currentRoom.id)
+    graph.add_vertex(current.id)
+
+    while stack.size() and len(graph.vertices) != len(roomGraph):
+        # save in graph all exits and initialize with '?'
+        exits = current.getExits()
+        for ex in exits:
+            if ex not in graph.vertices[current.id]:
+                graph.add_edge(current.id, str(ex), '?')
+
+        current_vertex = stack.pop()
+
+        for direction in exits:
+            if graph.vertices[current_vertex][direction] == '?':
+                unknown_exits.append(direction)
+
+        # reached deadend and moves back on our steps or all rooms have been explored from this room
+        if len(unknown_exits) == 0:
+            direction = way_back.pop()
+            result.append(direction)
+            player.travel(direction)
+            current = player.currentRoom
+            stack.push(current.id)
+            unknown_exits = []
+        else:
+            # pick an exit with only one or two rooms, else pick a random room and pray
+            direction = get_shortest_exit(unknown_exits, current) or get_random_exit(unknown_exits)
+            # saves return path in case we reach deadend
+            way_back.push(get_opposite(direction))   
+
+            # moves and updates the graph, replacing the '?'
+            if graph.vertices[current_vertex][direction] == '?':
+                previous = current
+                player.travel(direction)
+                current = player.currentRoom
+                graph.add_edge(previous.id, direction, current.id)
+                graph.add_vertex(current.id)
+                graph.add_edge(current.id, get_opposite(direction), previous.id)
+                stack.push(current.id)
+                unknown_exits = []
+                result.append(direction)
+
+    return result
+
+traversalPath = game(player)
 
 # TRAVERSAL TEST
 visited_rooms = set()
