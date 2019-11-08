@@ -43,7 +43,6 @@ def game(player):
     result = []
     graph = Graph()
     stack = Stack()
-    # directions = ['n', 'e', 's', 'w']
 
     stack.push(player.currentRoom.id)
 
@@ -57,13 +56,11 @@ def game(player):
     while stack.size() and len(graph.vertices) != len(roomGraph):
         # print(current.id)
         # time.sleep(.100)
-        # graph.add_vertex(current.id)
         exits = current.getExits()
         # print(current.getExits())
         for ex in exits:
             # print(graph.vertices[current.id])
             if ex not in graph.vertices[current.id]:
-                # graph.add_edge(current.id, {str(ex): '?'})
                 graph.add_edge(current.id, str(ex), '?')
         # print(graph.vertices)        
 
@@ -75,7 +72,6 @@ def game(player):
                 unknown_exits.append(direction)
 
         if len(unknown_exits) == 0:
-            # while way_back.size():
             direction = way_back.pop()
             result.append(direction)
             player.travel(direction)
@@ -84,14 +80,10 @@ def game(player):
             stack.push(current.id)
             unknown_exits = []
         else:
-            # if len(unknown_exits) > 1:
-            #     way_back.reset()
-
             direction = random.choice(unknown_exits)
             way_back.push(get_opposite(direction))   
 
             if graph.vertices[current_vertex][direction] == '?':
-                # print('works')
                 previous = current
                 player.travel(direction)
                 current = player.currentRoom
